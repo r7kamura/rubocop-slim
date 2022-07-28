@@ -1,0 +1,200 @@
+inherit_mode:
+  merge:
+    - Exclude
+    - Include
+
+AllCops:
+  Include:
+    - '**/*.slim'
+
+Layout/ArgumentAlignment:
+  Exclude:
+    - '**/*.slim'
+
+Layout/ArrayAlignment:
+  Exclude:
+    - '**/*.slim'
+
+Layout/BlockAlignment:
+  Exclude:
+    - '**/*.slim'
+
+Layout/ClosingParenthesisIndentation:
+  Exclude:
+    - '**/*.slim'
+
+Lint/EmptyFile:
+  Exclude:
+    - '**/*.slim'
+
+Layout/EmptyLineAfterGuardClause:
+  Exclude:
+    - '**/*.slim'
+
+Layout/EndAlignment:
+  Exclude:
+    - '**/*.slim'
+
+Layout/FirstArgumentIndentation:
+  Exclude:
+    - '**/*.slim'
+
+Layout/FirstArrayElementIndentation:
+  Exclude:
+    - '**/*.slim'
+
+Layout/FirstArrayElementLineBreak:
+  Exclude:
+    - '**/*.slim'
+
+Layout/FirstHashElementIndentation:
+  Exclude:
+    - '**/*.slim'
+
+Layout/FirstHashElementLineBreak:
+  Exclude:
+    - '**/*.slim'
+
+Layout/FirstMethodArgumentLineBreak:
+  Exclude:
+    - '**/*.slim'
+
+Layout/FirstParameterIndentation:
+  Exclude:
+    - '**/*.slim'
+
+Layout/HashAlignment:
+  Exclude:
+    - '**/*.slim'
+
+Layout/IndentationConsistency:
+  Exclude:
+    - '**/*.slim'
+
+Layout/IndentationWidth:
+  Exclude:
+    - '**/*.slim'
+
+Layout/LineEndStringConcatenationIndentation:
+  Exclude:
+    - '**/*.slim'
+
+Layout/LineLength:
+  Exclude:
+    - '**/*.slim'
+
+Layout/MultilineArrayBraceLayout:
+  Exclude:
+    - '**/*.slim'
+
+Layout/MultilineAssignmentLayout:
+  Exclude:
+    - '**/*.slim'
+
+Layout/MultilineHashBraceLayout:
+  Exclude:
+    - '**/*.slim'
+
+Layout/MultilineMethodCallBraceLayout:
+  Exclude:
+    - '**/*.slim'
+
+Layout/MultilineMethodCallIndentation:
+  Exclude:
+    - '**/*.slim'
+
+Layout/MultilineMethodDefinitionBraceLayout:
+  Exclude:
+    - '**/*.slim'
+
+Layout/MultilineOperationIndentation:
+  Exclude:
+    - '**/*.slim'
+
+Layout/ParameterAlignment:
+  Exclude:
+    - '**/*.slim'
+
+Layout/TrailingEmptyLines:
+  Exclude:
+    - '**/*.slim'
+
+Layout/TrailingWhitespace:
+  Exclude:
+    - '**/*.slim'
+
+Lint/UselessAssignment:
+  Exclude:
+    - '**/*.slim'
+
+Lint/Void:
+  Exclude:
+    - '**/*.slim'
+
+Metrics/BlockLength:
+  Exclude:
+    - '**/*.slim'
+
+Metrics/BlockNesting:
+  Exclude:
+    - '**/*.slim'
+
+Naming/FileName:
+  Exclude:
+    - '**/*.slim'
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - '**/*.slim'
+
+Style/IdenticalConditionalBranches:
+  Exclude:
+    - '**/*.slim'
+
+Style/IfUnlessModifier:
+  Exclude:
+    - '**/*.slim'
+
+Style/MultilineTernaryOperator:
+  Exclude:
+    - '**/*.slim'
+
+Style/NestedTernaryOperator:
+  Exclude:
+    - '**/*.slim'
+
+Style/Next:
+  Exclude:
+    - '**/*.slim'
+
+Style/ParallelAssignment:
+  Exclude:
+    - '**/*.slim'
+
+Style/RescueModifier:
+  Exclude:
+    - '**/*.slim'
+
+Style/Semicolon:
+  Exclude:
+    - '**/*.slim'
+
+Style/TrailingCommaInArguments:
+  Exclude:
+    - '**/*.slim'
+
+Style/TrailingCommaInArrayLiteral:
+  Exclude:
+    - '**/*.slim'
+
+Style/TrailingCommaInHashLiteral:
+  Exclude:
+    - '**/*.slim'
+
+Style/WhileUntilDo:
+  Exclude:
+    - '**/*.slim'
+
+Style/WhileUntilModifier:
+  Exclude:
+    - '**/*.slim'
