@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/r7kamura/rubocop.git
-  revision: 9267fef7f6055bc141340164ac13bcd6b9f35de1
+  revision: 3cc4ac4215bc9464ee20fe4524d0fe9c2ca63249
   branch: feature/template-support
   specs:
     rubocop (1.32.0)
