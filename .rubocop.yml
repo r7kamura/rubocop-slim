@@ -1,6 +1,19 @@
+require:
+  - rubocop-slim
+
+inherit_mode:
+  merge:
+    - Exclude
+
 AllCops:
+  Exclude:
+    - spec/**/*.slim
   NewCops: enable
   TargetRubyVersion: 2.6
 
 Metrics:
   Enabled: false
+
+Naming/FileName:
+  Exclude:
+    - lib/rubocop-slim.rb
