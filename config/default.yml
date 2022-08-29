@@ -23,10 +23,6 @@ Layout/ClosingParenthesisIndentation:
   Exclude:
     - '**/*.slim'
 
-Lint/EmptyFile:
-  Exclude:
-    - '**/*.slim'
-
 Layout/EmptyLineAfterGuardClause:
   Exclude:
     - '**/*.slim'
@@ -120,6 +116,10 @@ Layout/TrailingEmptyLines:
     - '**/*.slim'
 
 Layout/TrailingWhitespace:
+  Exclude:
+    - '**/*.slim'
+
+Lint/EmptyFile:
   Exclude:
     - '**/*.slim'
 
