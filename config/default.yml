@@ -123,6 +123,10 @@ Lint/EmptyFile:
   Exclude:
     - '**/*.slim'
 
+Lint/SyntaxError:
+  Exclude:
+    - '**/*.slim'
+
 Lint/UselessAssignment:
   Exclude:
     - '**/*.slim'
