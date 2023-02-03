@@ -1,4 +1,5 @@
 require:
+  - rubocop-rspec
   - rubocop-slim
 
 inherit_mode:
@@ -17,6 +18,15 @@ Metrics:
 Naming/FileName:
   Exclude:
     - lib/rubocop-slim.rb
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
 
 Style/Documentation:
   Enabled: false
