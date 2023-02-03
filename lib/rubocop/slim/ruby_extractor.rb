@@ -26,13 +26,16 @@ module RuboCop
 
         ruby_ranges.map do |(begin_, end_)|
           clip = RubyClipper.new(template_source[begin_...end_]).call
+          processed_source = ::RuboCop::ProcessedSource.new(
+            clip[:code],
+            @processed_source.ruby_version,
+            file_path
+          )
+          processed_source.config = @processed_source.config
+          processed_source.registry = @processed_source.registry
           {
             offset: begin_ + clip[:offset],
-            processed_source: ::RuboCop::ProcessedSource.new(
-              clip[:code],
-              @processed_source.ruby_version,
-              file_path
-            )
+            processed_source: processed_source
           }
         end
       end
