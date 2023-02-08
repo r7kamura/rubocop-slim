@@ -55,3 +55,9 @@ spec/fixtures/dummy.slim:8:6: C: [Correctable] Style/StringLiterals: Prefer sing
 
 1 file inspected, 5 offenses detected, 5 offenses autocorrectable
 ```
+
+## Related projects
+
+- https://github.com/r7kamura/rubocop-erb
+- https://github.com/r7kamura/rubocop-haml
+- https://github.com/r7kamura/rubocop-markdown
