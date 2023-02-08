@@ -27,7 +27,6 @@ Gem::Specification.new do |spec|
   spec.bindir = 'exe'
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
-  spec.metadata['rubygems_mfa_required'] = 'true'
 
   spec.add_dependency 'rubocop', '~> 1.45'
   spec.add_dependency 'slimi', '~> 0.7'
