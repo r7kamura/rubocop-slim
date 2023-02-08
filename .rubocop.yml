@@ -13,6 +13,9 @@ AllCops:
   NewCops: enable
   TargetRubyVersion: 2.6
 
+Gemspec/RequireMFA:
+  Enabled: false
+
 Metrics:
   Enabled: false
 
