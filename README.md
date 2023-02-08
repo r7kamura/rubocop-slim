@@ -1,5 +1,7 @@
 # rubocop-slim
 
+[![test](https://github.com/r7kamura/rubocop-slim/actions/workflows/test.yml/badge.svg)](https://github.com/r7kamura/rubocop-slim/actions/workflows/test.yml)
+
 [RuboCop](https://github.com/rubocop/rubocop) plugin for [Slim](https://github.com/slim-template/slim) template language.
 
 ## Installation
