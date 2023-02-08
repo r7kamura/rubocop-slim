@@ -1,23 +1,8 @@
-GIT
-  remote: https://github.com/rubocop/rubocop.git
-  revision: 3c9c49416c0fd3db077cec8410cb1280f6771dbb
-  specs:
-    rubocop (1.44.1)
-      json (~> 2.3)
-      parallel (~> 1.10)
-      parser (>= 3.2.0.0)
-      rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.8, < 3.0)
-      rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.24.1, < 2.0)
-      ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 2.4.0, < 3.0)
-
 PATH
   remote: .
   specs:
     rubocop-slim (0.1.0)
-      rubocop (~> 1.32)
+      rubocop (~> 1.45)
       slimi (~> 0.7)
 
 GEM
@@ -46,6 +31,16 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
     rspec-support (3.12.0)
+    rubocop (1.45.0)
+      json (~> 2.3)
+      parallel (~> 1.10)
+      parser (>= 3.2.0.0)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.24.1, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 3.0)
     rubocop-ast (1.24.1)
       parser (>= 3.1.1.0)
     rubocop-capybara (2.17.0)
@@ -71,7 +66,7 @@ PLATFORMS
 DEPENDENCIES
   rake
   rspec
-  rubocop!
+  rubocop
   rubocop-rake
   rubocop-rspec
   rubocop-slim!
