@@ -25,7 +25,7 @@ module RuboCop
         return unless supported_file_path_pattern?
 
         ruby_ranges.map do |(begin_, end_)|
-          clip = RubyClipper.new(template_source[begin_...end_]).call
+          clip = KeywordRemover.new(template_source[begin_...end_]).call
           processed_source = ::RuboCop::ProcessedSource.new(
             clip[:code],
             @processed_source.ruby_version,
