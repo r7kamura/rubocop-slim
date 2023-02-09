@@ -3,8 +3,8 @@
 module RuboCop
   module Slim
     autoload :ConfigLoader, 'rubocop/slim/config_loader'
+    autoload :KeywordRemover, 'rubocop/slim/keyword_remover'
     autoload :RubyClip, 'rubocop/slim/ruby_clip'
-    autoload :RubyClipper, 'rubocop/slim/ruby_clipper'
     autoload :RubyExtractor, 'rubocop/slim/ruby_extractor'
   end
 end

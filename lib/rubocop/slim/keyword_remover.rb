@@ -3,7 +3,7 @@
 module RuboCop
   module Slim
     # Remove unnecessary part (e.g. `if`, `unless`, `do`, ...) from Ruby-ish code.
-    class RubyClipper
+    class KeywordRemover
       class << self
         # @param [String] code
         # @return [Hash]
