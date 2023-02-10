@@ -6,6 +6,7 @@ module RuboCop
     autoload :KeywordRemover, 'rubocop/slim/keyword_remover'
     autoload :RubyClip, 'rubocop/slim/ruby_clip'
     autoload :RubyExtractor, 'rubocop/slim/ruby_extractor'
+    autoload :WhenDecomposer, 'rubocop/slim/when_decomposer'
   end
 end
 

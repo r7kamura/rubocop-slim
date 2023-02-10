@@ -24,17 +24,16 @@ module RuboCop
       def call
         return unless supported_file_path_pattern?
 
-        ruby_ranges.map do |(begin_, end_)|
-          clip = KeywordRemover.new(template_source[begin_...end_]).call
+        ruby_clips.map do |ruby_clip|
           processed_source = ::RuboCop::ProcessedSource.new(
-            clip[:code],
+            ruby_clip.code,
             @processed_source.ruby_version,
             file_path
           )
           processed_source.config = @processed_source.config
           processed_source.registry = @processed_source.registry
           {
-            offset: begin_ + clip[:offset],
+            offset: ruby_clip.offset,
             processed_source: processed_source
           }
         end
@@ -52,6 +51,20 @@ module RuboCop
       # @return [String, nil]
       def file_path
         @processed_source.path
+      end
+
+      # @return [Array<RuboCop::Slim::RubyClip]
+      def ruby_clips
+        ruby_ranges.map do |(begin_, end_)|
+          RubyClip.new(
+            code: template_source[begin_...end_],
+            offset: begin_
+          )
+        end.flat_map do |ruby_clip|
+          WhenDecomposer.call(ruby_clip)
+        end.map do |ruby_clip|
+          KeywordRemover.call(ruby_clip)
+        end
       end
 
       # @return [Array<Array<Integer>>]

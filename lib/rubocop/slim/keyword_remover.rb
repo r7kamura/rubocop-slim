@@ -5,16 +5,16 @@ module RuboCop
     # Remove unnecessary part (e.g. `if`, `unless`, `do`, ...) from Ruby-ish code.
     class KeywordRemover
       class << self
-        # @param [String] code
-        # @return [Hash]
-        def call(code)
-          new(code).call
+        # @param [RuboCop::Slim::RubyClip] ruby_clip
+        # @return [RuboCop::Slim::RubyClip]
+        def call(ruby_clip)
+          new(ruby_clip).call
         end
       end
 
-      # @param [String] code
-      def initialize(code)
-        @code = code
+      # @param [String] ruby_clip
+      def initialize(ruby_clip)
+        @ruby_clip = ruby_clip
       end
 
       # @return [RuboCop::Slim::RubyClip]
@@ -22,12 +22,7 @@ module RuboCop
         [
           PrecedingKeywordRemover,
           TrailingDoRemover
-        ].reduce(
-          RubyClip.new(
-            code: @code,
-            offset: 0
-          )
-        ) do |previous, callable|
+        ].reduce(@ruby_clip) do |previous, callable|
           result = callable.call(previous.code)
           RubyClip.new(
             code: result.code,
