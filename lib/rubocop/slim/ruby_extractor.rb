@@ -68,18 +68,21 @@ module RuboCop
         file_path&.end_with?('.slim')
       end
 
-      def traverse(node, &block)
+      # @return [String]
+      def template_source
+        @processed_source.raw_source
+      end
+
+      def traverse(
+        node,
+        &block
+      )
         return unless node.instance_of?(::Array)
 
         block.call(node[2], node[3]) if node[0] == :slimi && node[1] == :position
         node.each do |element|
           traverse(element, &block)
         end
-      end
-
-      # @return [String]
-      def template_source
-        @processed_source.raw_source
       end
     end
   end
