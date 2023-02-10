@@ -4,7 +4,7 @@ require_relative 'lib/rubocop/slim/version'
 
 Gem::Specification.new do |spec|
   spec.name = 'rubocop-slim'
-  spec.version = Rubocop::Slim::VERSION
+  spec.version = RuboCop::Slim::VERSION
   spec.authors = ['Ryo Nakamura']
   spec.email = ['r7kamura@gmail.com']
 
