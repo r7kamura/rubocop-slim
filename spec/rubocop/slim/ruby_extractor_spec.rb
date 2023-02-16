@@ -57,5 +57,25 @@ RSpec.describe RuboCop::Slim::RubyExtractor do
         expect(result[1][:offset]).to eq(10)
       end
     end
+
+    context 'with `else`' do
+      let(:source) do
+        <<~SLIM
+          - if a
+            p b
+          - else
+            p c
+        SLIM
+      end
+
+      it 'returns Ruby codes for a and b' do
+        result = subject
+        expect(result.length).to eq(2)
+        expect(result[0][:processed_source].raw_source).to eq('a')
+        expect(result[0][:offset]).to eq(5)
+        expect(result[1][:processed_source].raw_source).to eq('')
+        expect(result[1][:offset]).to eq(19)
+      end
+    end
   end
 end
