@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rubocop-slim (0.2.4)
+    rubocop-slim (0.2.5)
       rubocop (~> 1.45)
       slimi (~> 0.7)
 
