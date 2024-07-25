@@ -122,5 +122,20 @@ RSpec.describe RuboCop::Slim::RubyExtractor do
         expect(result[0][:offset]).to eq(7)
       end
     end
+
+    context 'with `when ... # ...`' do
+      let(:source) do
+        <<~SLIM
+          - when a # b
+        SLIM
+      end
+
+      it 'returns Ruby codes for when condition' do
+        result = subject
+        expect(result.length).to eq(1)
+        expect(result[0][:processed_source].raw_source).to eq('a')
+        expect(result[0][:offset]).to eq(7)
+      end
+    end
   end
 end
