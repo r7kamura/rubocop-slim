@@ -43,10 +43,10 @@ RSpec.describe RuboCop::Slim::RubyExtractor do
 
     context 'with trailing code comments after do block' do
       let(:source) do
-        <<~HAML
+        <<~SLIM
           - array.each do |element| # code comment
             = element
-        HAML
+        SLIM
       end
 
       it 'returns Ruby codes with offset' do
