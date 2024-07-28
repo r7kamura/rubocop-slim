@@ -86,7 +86,7 @@ module RuboCop
       # Remove trailing `do`.
       class TrailingDoRemover
         REGEXP = /
-          [ \t]
+          (?:\b[ \t]*|[ \t])
           do
           [ \t]*
           (\|[^|]*\|)?
