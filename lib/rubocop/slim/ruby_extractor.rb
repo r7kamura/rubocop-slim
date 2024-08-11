@@ -25,16 +25,12 @@ module RuboCop
         return unless supported_file_path_pattern?
 
         ruby_clips.map do |ruby_clip|
-          processed_source = ::RuboCop::ProcessedSource.new(
-            ruby_clip.code,
-            @processed_source.ruby_version,
-            file_path
-          )
-          processed_source.config = @processed_source.config
-          processed_source.registry = @processed_source.registry
           {
             offset: ruby_clip.offset,
-            processed_source: processed_source
+            processed_source: ProcessedSourceBuilder.call(
+              code: ruby_clip.code,
+              processed_source: @processed_source
+            )
           }
         end
       end
@@ -61,7 +57,7 @@ module RuboCop
             offset: begin_
           )
         end.flat_map do |ruby_clip|
-          WhenDecomposer.call(ruby_clip)
+          WhenDecomposer.call(@processed_source, ruby_clip)
         end.map do |ruby_clip|
           KeywordRemover.call(ruby_clip)
         end
