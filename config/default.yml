@@ -123,7 +123,7 @@ Lint/EmptyFile:
   Exclude:
     - '**/*.slim'
 
-Lint/SyntaxError:
+Lint/Syntax:
   Exclude:
     - '**/*.slim'
 
