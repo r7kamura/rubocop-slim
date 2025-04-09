@@ -81,9 +81,10 @@ GEM
       rubocop (~> 1.72, >= 1.72.1)
     ruby-progressbar (1.13.0)
     securerandom (0.3.2)
-    sevencop (0.47.0)
+    sevencop (0.48.0)
       activesupport
-      rubocop
+      lint_roller (>= 1.1)
+      rubocop (>= 1.72.1)
     slimi (0.7.6)
       temple
       thor
