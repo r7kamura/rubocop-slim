@@ -20,11 +20,11 @@ gem install rubocop-slim
 
 ## Usage
 
-Require `rubocop-slim` in your RuboCop config.
+Add `rubocop-slim` to plugins.
 
 ```yaml
 # .rubocop.yml
-require:
+plugins:
   - rubocop-slim
 ```
 

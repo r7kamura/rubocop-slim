@@ -11,5 +11,5 @@ module RuboCop
   end
 end
 
-require_relative 'slim/rubocop_extension'
+require_relative 'slim/plugin'
 require_relative 'slim/version'
