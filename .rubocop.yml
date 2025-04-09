@@ -1,8 +1,10 @@
-require:
+plugins:
   - rubocop-rake
   - rubocop-rspec
-  - rubocop-slim
   - sevencop
+
+require:
+  - rubocop-slim
 
 inherit_mode:
   merge:
