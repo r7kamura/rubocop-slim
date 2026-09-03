@@ -41,6 +41,126 @@ RSpec.describe RuboCop::Slim::RubyExtractor do
       end
     end
 
+    context 'without standalone directives' do
+      let(:source) do
+        <<~SLIM
+          - when primary, fallback
+        SLIM
+      end
+
+      it 'retains compact transformed clips and their original offsets' do
+        result = subject
+
+        expect(result.map { |clip| clip[:processed_source].raw_source }).to eq(%w[primary fallback])
+        expect(result.map { |clip| clip[:offset] }).to eq([7, 16])
+      end
+    end
+
+    context 'with standalone Slim comment directives' do
+      let(:source) do
+        <<~SLIM
+          / rubocop:disable Style/WordArray
+          - records.each do |record|
+        SLIM
+      end
+
+      it 'shadows transformed clips at their original positions' do
+        result = subject
+        shadow = result.fetch(0)
+
+        expect(result.length).to eq(1)
+        expect(shadow[:offset]).to eq(0)
+        expect(shadow[:processed_source].raw_source.bytesize).to eq(source.bytesize)
+        expect(shadow[:processed_source].raw_source).to start_with('# rubocop:disable Style/WordArray')
+        expect(shadow[:processed_source].raw_source.byteslice(source.index('records.each'), 12)).to eq('records.each')
+      end
+    end
+
+    context 'with multibyte text before standalone Slim comment directives' do
+      let(:source) do
+        <<~SLIM
+          p café
+          / rubocop:disable Style/WordArray
+          = target
+        SLIM
+      end
+
+      it 'keeps directive and Ruby clip positions in characters' do
+        shadow = subject.fetch(0)[:processed_source].raw_source
+
+        expect(shadow.index('# rubocop:disable Style/WordArray')).to eq(
+          source.index('/ rubocop:disable Style/WordArray')
+        )
+        expect(shadow.index('target')).to eq(source.index('target'))
+        expect(shadow.count("\n")).to eq(source.count("\n"))
+      end
+    end
+
+    context 'with standalone Ruby comment directives' do
+      let(:source) do
+        <<~SLIM
+          - # rubocop:disable Style/WordArray
+          = items.map { |item| item.name } # native comment
+        SLIM
+      end
+
+      it 'does not emit the directive clip and preserves native comments in the target shadow' do
+        result = subject
+        shadow = result.fetch(0)
+
+        expect(result.length).to eq(1)
+        expect(shadow[:offset]).to eq(0)
+        expect(shadow[:processed_source].raw_source).to start_with('#   rubocop:disable Style/WordArray')
+        expect(shadow[:processed_source].raw_source).to include('items.map { |item| item.name } # native comment')
+      end
+    end
+
+    context 'with multiple directives and Ruby clips' do
+      let(:source) do
+        <<~SLIM
+          / rubocop:disable Style/WordArray
+          = first
+          - # rubocop:disable Metrics/MethodLength
+          = second
+        SLIM
+      end
+
+      it 'applies directives according to marker position before each final clip' do
+        result = subject
+        first_shadow, second_shadow = result
+
+        expect(first_shadow[:offset]).to eq(0)
+        expect(first_shadow[:processed_source].raw_source).to include('# rubocop:disable Style/WordArray')
+        expect(first_shadow[:processed_source].raw_source).not_to include('Metrics/MethodLength')
+        expect(first_shadow[:processed_source].raw_source.byteslice(source.index('first'), 5)).to eq('first')
+        expect(second_shadow[:offset]).to eq(0)
+        expect(second_shadow[:processed_source].raw_source).to include('# rubocop:disable Style/WordArray')
+        expect(second_shadow[:processed_source].raw_source).to include('#   rubocop:disable Metrics/MethodLength')
+        expect(second_shadow[:processed_source].raw_source.byteslice(source.index('second'), 6)).to eq('second')
+      end
+    end
+
+    context 'with multiple Ruby clips on one line' do
+      let(:source) do
+        <<~SLIM
+          / rubocop:disable Style/WordArray
+          a href=first = second
+        SLIM
+      end
+
+      it 'creates a distinct shadow for each clip' do
+        result = subject
+
+        expect(result.map { |clip| clip[:offset] }).to eq([0, 0])
+        expect(result.map { |clip| clip[:processed_source].raw_source.byteslice(source.index('first'), 5) }).to eq(
+          ['first', '     ']
+        )
+        expect(result.map { |clip| clip[:processed_source].raw_source.byteslice(source.index('second'), 6) }).to eq(
+          ['      ', 'second']
+        )
+      end
+    end
+
     context 'with trailing code comments after do block' do
       let(:source) do
         <<~SLIM

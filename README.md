@@ -56,6 +56,54 @@ spec/fixtures/dummy.slim:8:6: C: [Correctable] Style/StringLiterals: Prefer sing
 1 file inspected, 5 offenses detected, 5 offenses autocorrectable
 ```
 
+## Directives
+
+Use a standalone Slim comment to suppress offenses. This is the preferred form.
+
+```slim
+/ rubocop:disable Style/StringLiterals
+= "a"
+/ rubocop:enable Style/StringLiterals
+```
+
+A directive takes effect from its own line and applies to every Ruby fragment that follows, until the matching `rubocop:enable` or the end of the template.
+
+A Ruby comment line works as well. Terminate it with a newline; without one, its Ruby comment can swallow Slim's generated buffer return.
+
+```slim
+- # rubocop:disable Style/StringLiterals
+= "a"
+- # rubocop:enable Style/StringLiterals
+```
+
+Which modes exist, how cop names and departments resolve, and what an unknown or malformed directive reports are all decided by the installed RuboCop, exactly as in Ruby files.
+
+### Unsupported forms
+
+HTML comments and conditional comments are rendered output rather than directives, and have no effect.
+
+```slim
+/! rubocop:disable Style/StringLiterals
+/[if IE] rubocop:disable Style/StringLiterals
+```
+
+Text nested under a comment, a filter, or any line that opens literal text is content, so a directive written there is inert. This includes a tag with inline text, whose indented lines continue that text.
+
+```slim
+| verbatim
+  / rubocop:disable Style/StringLiterals
+
+p literal
+  / rubocop:disable Style/StringLiterals
+```
+
+A trailing directive on a line that already carries Ruby is unsupported, and fails two different ways. On an output line, Slim compiles the expression onto a single generated line and the comment swallows the rest of it, so the template no longer compiles. On a control line that opens a block, the template still compiles but the directive is silently ignored. Use a standalone `/` comment instead.
+
+```slim
+= "a" # rubocop:disable Style/StringLiterals
+- items.each do |item| # rubocop:disable Style/StringLiterals
+```
+
 ## Related projects
 
 - https://github.com/r7kamura/rubocop-erb
