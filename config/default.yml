@@ -71,6 +71,10 @@ Layout/IndentationWidth:
   Exclude:
     - '**/*.slim'
 
+Layout/InitialIndentation:
+  Exclude:
+    - '**/*.slim'
+
 Layout/LineEndStringConcatenationIndentation:
   Exclude:
     - '**/*.slim'

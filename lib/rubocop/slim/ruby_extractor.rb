@@ -39,9 +39,44 @@ module RuboCop
 
       # @return [Array] Slim AST, represented in S-expression.
       def ast
-        ::Slimi::Filters::Interpolation.new.call(
-          ::Slimi::Parser.new(file: file_path).call(template_source)
-        )
+        @ast ||= ::Slimi::Filters::Interpolation.new.call(raw_ast)
+      end
+
+      # @return [Array<RuboCop::Slim::RubyClip>]
+      def embedded_ruby_clips
+        embedded_ruby_ranges.filter_map do |begin_, end_|
+          code = template_source[begin_...end_]
+          next if code.strip.empty?
+
+          RubyClip.new(code: code, offset: begin_)
+        end
+      end
+
+      # @return [Array]
+      def embedded_ruby_nodes
+        nodes = []
+        traverse_raw_ast(raw_ast) do |node|
+          nodes << node if node[0..1] == %i[slimi embedded] && node[2] == 'ruby'
+        end
+        nodes
+      end
+
+      # @param [Array] body
+      # @return [Array<Integer>, nil]
+      def embedded_ruby_range(body)
+        positions = interpolation_positions(body)
+        return if positions.empty?
+
+        begin_ = positions.map(&:first).min
+        end_ = positions.map(&:last).max
+        [physical_line_beginning(begin_), end_]
+      end
+
+      # @return [Array<Array<Integer>>]
+      def embedded_ruby_ranges
+        embedded_ruby_nodes.filter_map do |node|
+          embedded_ruby_range(node[3])
+        end
       end
 
       # @return [String, nil]
@@ -49,8 +84,17 @@ module RuboCop
         @processed_source.path
       end
 
-      # @return [Array<RuboCop::Slim::RubyClip]
-      def ruby_clips
+      # @param [Array] node
+      # @return [Array<Array<Integer>>]
+      def interpolation_positions(node)
+        return [] unless node.instance_of?(::Array)
+
+        position = [node[2], node[3]] if node[0..1] == %i[slimi interpolate]
+        node.flat_map { |element| interpolation_positions(element) } + [position].compact
+      end
+
+      # @return [Array<RuboCop::Slim::RubyClip>]
+      def ordinary_ruby_clips
         ruby_ranges.map do |(begin_, end_)|
           RubyClip.new(
             code: template_source[begin_...end_],
@@ -61,6 +105,24 @@ module RuboCop
         end.map do |ruby_clip|
           KeywordRemover.call(ruby_clip)
         end
+      end
+
+      # @param [Integer] offset
+      # @return [Integer]
+      def physical_line_beginning(offset)
+        return 0 if offset.zero?
+
+        template_source.rindex("\n", offset - 1)&.+(1) || 0
+      end
+
+      # @return [Array] Slim AST before interpolation is applied.
+      def raw_ast
+        @raw_ast ||= ::Slimi::Parser.new(file: file_path).call(template_source)
+      end
+
+      # @return [Array<RuboCop::Slim::RubyClip]
+      def ruby_clips
+        (ordinary_ruby_clips + embedded_ruby_clips).sort_by(&:offset)
       end
 
       # @return [Array<Array<Integer>>]
@@ -88,10 +150,22 @@ module RuboCop
       )
         return unless node.instance_of?(::Array)
 
+        return if node[0..1] == %i[slimi embedded] && node[2] == 'ruby'
+
         block.call(node[2], node[3]) if node[0] == :slimi && node[1] == :position
         node.each do |element|
           traverse(element, &block)
         end
+      end
+
+      def traverse_raw_ast(
+        node,
+        &block
+      )
+        return unless node.instance_of?(::Array)
+
+        block.call(node)
+        node.each { |element| traverse_raw_ast(element, &block) }
       end
     end
   end

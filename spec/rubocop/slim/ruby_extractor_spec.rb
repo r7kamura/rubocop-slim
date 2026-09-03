@@ -27,6 +27,123 @@ RSpec.describe RuboCop::Slim::RubyExtractor do
       SLIM
     end
 
+    context 'with embedded Ruby filters' do
+      let(:file_path) do
+        'example.slim'
+      end
+
+      it 'returns a complete multiline body from its first physical line' do
+        source = <<~SLIM
+          p Before
+          ruby:
+            if enabled
+              greeting = "Hello \#{name}"
+            else
+              greeting = "Hi"
+            end
+        SLIM
+        result = described_class.call(
+          RuboCop::ProcessedSource.new(source, 3.1, file_path)
+        )
+
+        expect(result.length).to eq(1)
+        expected_body = <<~RUBY.gsub(/^/, '  ').chomp
+          if enabled
+            greeting = "Hello \#{name}"
+          else
+            greeting = "Hi"
+          end
+        RUBY
+        expect(result.first[:processed_source].raw_source).to eq(expected_body)
+        expect(result.first[:offset]).to eq(source.index('  if enabled'))
+        expect(result.first[:processed_source].file_path).to eq('example.slim')
+        expect(result.first[:processed_source].raw_source.scan("\#{name}")).to eq(["\#{name}"])
+      end
+
+      it 'preserves complete case control flow' do
+        source = <<~SLIM
+          ruby:
+            case status
+            when :active
+              :enabled
+            else
+              :disabled
+            end
+        SLIM
+        result = described_class.call(
+          RuboCop::ProcessedSource.new(source, 3.1, file_path)
+        )
+
+        expected_body = <<~RUBY.gsub(/^/, '  ').chomp
+          case status
+          when :active
+            :enabled
+          else
+            :disabled
+          end
+        RUBY
+        expect(result.map { |clip| clip[:processed_source].raw_source }).to eq([expected_body])
+      end
+
+      it 'keeps multiple bodies in source order' do
+        source = <<~SLIM
+          p Before
+          ruby:
+            first = 1
+          p Between
+          ruby:
+            second = 2
+        SLIM
+        result = described_class.call(
+          RuboCop::ProcessedSource.new(source, 3.1, file_path)
+        )
+
+        expect(result.map { |clip| clip[:processed_source].raw_source }).to eq([
+                                                                                 '  first = 1',
+                                                                                 '  second = 2'
+                                                                               ])
+        expect(result.map { |clip| clip[:offset] }).to eq([
+                                                            source.index('  first = 1'),
+                                                            source.index('  second = 2')
+                                                          ])
+      end
+
+      it 'extracts non-Ruby filter interpolations once without splitting Ruby filters' do
+        source = <<~SLIM
+          javascript:
+            const name = "\#{user.name}"
+          ruby:
+            greeting = "Hello \#{name}"
+        SLIM
+        result = described_class.call(
+          RuboCop::ProcessedSource.new(source, 3.1, file_path)
+        )
+
+        expect(result.map { |clip| clip[:processed_source].raw_source }).to eq([
+                                                                                 'user.name',
+                                                                                 '  greeting = "Hello #{name}"'
+                                                                               ])
+        expect(result.map { |clip| clip[:offset] }).to eq([
+                                                            source.index('user.name'),
+                                                            source.index('  greeting')
+                                                          ])
+      end
+
+      it 'ignores blank bodies, non-Ruby filters, and inline filter attributes' do
+        source = <<~SLIM
+          ruby:
+          javascript:
+            const a = 1
+          ruby: a = 1
+        SLIM
+        result = described_class.call(
+          RuboCop::ProcessedSource.new(source, 3.1, file_path)
+        )
+
+        expect(result).to be_empty
+      end
+    end
+
     context 'with valid condition' do
       it 'returns Ruby codes with offset' do
         result = subject
