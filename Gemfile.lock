@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rubocop-slim (0.3.1)
+    rubocop-slim (0.4.0)
       lint_roller (>= 1.1)
       rubocop (>= 1.72.1)
       slimi (~> 0.7)
@@ -86,13 +86,13 @@ GEM
       activesupport
       lint_roller (>= 1.1)
       rubocop (>= 1.72.1)
-    slimi (0.7.6)
+    slimi (0.10.0)
       temple
       thor
       tilt
-    temple (0.10.4)
-    thor (1.4.0)
-    tilt (2.6.1)
+    temple (0.10.7)
+    thor (1.5.0)
+    tilt (2.9.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (3.1.4)
