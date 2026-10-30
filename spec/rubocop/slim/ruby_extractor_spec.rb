@@ -27,6 +27,37 @@ RSpec.describe RuboCop::Slim::RubyExtractor do
       SLIM
     end
 
+    context 'with ruby: block' do
+      let(:source) do
+        <<~SLIM
+          ruby:
+            if a
+              b
+            elsif c
+              d
+            else
+              e
+            end
+          ruby:
+            case f
+            when g
+              h
+            end
+        SLIM
+      end
+
+      it 'returns its body from the beginning of the line' do
+        result = subject
+        expect(result.map { |hash| hash[:processed_source].raw_source }).to eq(
+          [
+            "  if a\n    b\n  elsif c\n    d\n  else\n    e\n  end",
+            "  case f\n  when g\n    h\n  end"
+          ]
+        )
+        expect(result.map { |hash| hash[:offset] }).to eq([6, 60])
+      end
+    end
+
     context 'with valid condition' do
       it 'returns Ruby codes with offset' do
         result = subject
