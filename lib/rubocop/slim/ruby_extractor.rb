@@ -7,6 +7,17 @@ module RuboCop
   module Slim
     # Extract Ruby codes from Slim template.
     class RubyExtractor
+      # Keep `ruby:` bodies as is, so that their positions are available.
+      class Interpolation < ::Slimi::Filters::Interpolation
+        def on_slimi_embedded(
+          type,
+          expression,
+          attributes
+        )
+          type == 'ruby' ? [:slimi, :embedded, type, expression, attributes] : super
+        end
+      end
+
       class << self
         # @param [RuboCop::ProcessedSource] processed_source
         # @return [Array<RuboCop::ProcessedSource>, nil]
@@ -39,7 +50,7 @@ module RuboCop
 
       # @return [Array] Slim AST, represented in S-expression.
       def ast
-        ::Slimi::Filters::Interpolation.new.call(
+        Interpolation.new.call(
           ::Slimi::Parser.new(file: file_path).call(template_source)
         )
       end
@@ -51,23 +62,24 @@ module RuboCop
 
       # @return [Array<RuboCop::Slim::RubyClip]
       def ruby_clips
-        ruby_ranges.map do |(begin_, end_)|
-          RubyClip.new(
+        ruby_ranges.flat_map do |(begin_, end_, embedded)|
+          ruby_clip = RubyClip.new(
             code: template_source[begin_...end_],
             offset: begin_
           )
-        end.flat_map do |ruby_clip|
-          WhenDecomposer.call(@processed_source, ruby_clip)
-        end.map do |ruby_clip|
-          KeywordRemover.call(ruby_clip)
+          next ruby_clip if embedded
+
+          WhenDecomposer.call(@processed_source, ruby_clip).map do |decomposed_ruby_clip|
+            KeywordRemover.call(decomposed_ruby_clip)
+          end
         end
       end
 
       # @return [Array<Array<Integer>>]
       def ruby_ranges
         result = []
-        traverse(ast) do |begin_, end_|
-          result << [begin_, end_]
+        traverse(ast) do |begin_, end_, embedded|
+          result << [begin_, end_, embedded]
         end
         result
       end
@@ -87,6 +99,15 @@ module RuboCop
         &block
       )
         return unless node.instance_of?(::Array)
+
+        if node[0..2] == [:slimi, :embedded, 'ruby']
+          lines = node[3].grep(::Array).select { |child| child[1] == :interpolate }
+          unless lines.empty?
+            begin_ = (template_source.rindex("\n", lines.first[2] - 1) || -1) + 1
+            block.call(begin_, lines.last[3], true)
+          end
+          return
+        end
 
         block.call(node[2], node[3]) if node[0] == :slimi && node[1] == :position
         node.each do |element|
