@@ -60,4 +60,3 @@ spec/fixtures/dummy.slim:8:6: C: [Correctable] Style/StringLiterals: Prefer sing
 
 - https://github.com/r7kamura/rubocop-erb
 - https://github.com/r7kamura/rubocop-haml
-- https://github.com/r7kamura/rubocop-markdown
